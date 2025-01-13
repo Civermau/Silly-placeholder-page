@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A page, I guess</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        color: #fff;
+        overflow: hidden;
+      }
+      #container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .draggable {
+        font-size: 4em;
+        text-shadow: 2px 2px #ff6f61;
+        cursor: grab;
+        position: relative;
+        user-select: none;
+        display: inline-block;
+        margin: 0 10px;
+      }
+      #image-container {
+        position: absolute;
+        top: -100px;
+        left: -100px;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      #image-container img {
+        position: absolute;
+        width: 200px;
+        height: auto;
+        cursor: grab;
+        pointer-events: auto;
+      }
+    </style>
+    <link rel="icon" type="image/x-icon" href="Megumin.png" />
+  </head>
+  <body>
+    <div id="container">
+      <span class="draggable" draggable="true">I</span>
+      <span class="draggable" draggable="true">Have</span>
+      <span class="draggable" draggable="true">No</span>
+      <span class="draggable" draggable="true">Idea</span>
+      <span class="draggable" draggable="true">What</span>
+      <span class="draggable" draggable="true">To</span>
+      <span class="draggable" draggable="true">Put</span>
+      <span class="draggable" draggable="true">Here</span>
+      <span class="draggable" draggable="true">(Yet)</span>
+    </div>
+    <div id="image-container">
+      <img src="Megumin.png" alt="Megumin" class="draggable-image" />
+    </div>
+
+    <script>
+      const draggables = document.querySelectorAll(".draggable");
+      const draggableImage = document.querySelector(".draggable-image");
+
+      function setDraggableImageStartPosition(element) {
+        element.style.left = `50%`;
+        element.style.top = `65%`;
+      }
+
+      draggables.forEach((draggable) => {
+        draggable.addEventListener("dragstart", (event) => {
+          event.preventDefault();
+        });
+
+        draggable.addEventListener("mousedown", (event) => {
+          const rect = draggable.getBoundingClientRect();
+          const offsetX = event.clientX - rect.left;
+          const offsetY = event.clientY - rect.top;
+          draggable.style.cursor = "grabbing";
+          draggable.style.position = "absolute";
+
+          draggable.style.left = `${event.clientX - offsetX}px`;
+          draggable.style.top = `${event.clientY - offsetY}px`;
+
+          const onMouseMove = (event) => {
+            draggable.style.left = `${event.clientX - offsetX}px`;
+            draggable.style.top = `${event.clientY - offsetY}px`;
+          };
+
+          document.addEventListener("mousemove", onMouseMove);
+
+          document.addEventListener(
+            "mouseup",
+            () => {
+              document.removeEventListener("mousemove", onMouseMove);
+              draggable.style.cursor = "grab";
+            },
+            { once: true }
+          );
+        });
+      });
+
+      draggableImage.addEventListener("dragstart", (event) => {
+        event.preventDefault();
+      });
+
+      draggableImage.addEventListener("mousedown", (event) => {
+        draggableImage.style.cursor = "grabbing";
+        draggableImage.style.position = "absolute";
+
+        draggableImage.style.left = `${event.clientX}px`;
+        draggableImage.style.top = `${event.clientY}px`;
+
+        const onMouseMove = (event) => {
+          console.log(event.clientX, event.clientY);
+          draggableImage.style.left = `${event.clientX}px`;
+          draggableImage.style.top = `${event.clientY}px`;
+        };
+
+        document.addEventListener("mousemove", onMouseMove);
+
+        document.addEventListener(
+          "mouseup",
+          () => {
+            document.removeEventListener("mousemove", onMouseMove);
+            draggableImage.style.cursor = "grab";
+          },
+          { once: true }
+        );
+      });
+
+      setDraggableImageStartPosition(draggableImage);
+    </script>
+  </body>
+</html>
